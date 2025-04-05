@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>漳州旅游推荐系统</title>
+    <style>
+        body {
+            font-family: "微软雅黑", sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #e6f7ff 0%, #f0fff0 100%);
+        }
+        h1 {
+            color: #1a5b84;
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .container {
+            background: rgba(255,255,255,0.95);
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+        select {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid #1a5b84;
+            border-radius: 8px;
+            margin: 15px 0;
+            background: white;
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            background: #1a5b84;
+            color: white;
+            font-size: 18px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        button:hover {
+            background: #0d3c5f;
+            transform: translateY(-2px);
+        }
+        #result {
+            margin-top: 25px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            min-height: 80px;
+            line-height: 1.6;
+        }
+        .county-tag {
+            display: inline-block;
+            padding: 5px 10px;
+            background: #1a5b84;
+            color: white;
+            border-radius: 5px;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌺 漳州全域旅游智能推荐</h1>
+        
+        <select id="interest">
+            <option value="徒步">🚶‍♂️ 生态徒步</option>
+            <option value="骑行">🚴 滨海骑行</option>
+            <option value="看海">🌊 浪漫看海</option>
+        </select>
+
+        <button onclick="recommendSpot()">生成推荐</button>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        // 漳州全域景点数据库
+        const spots = [
+            { 
+                name: "东山岛（东山县）", 
+                interests: ["看海", "骑行"], 
+                emoji: "🏖️",
+                desc: "中国第七大岛，有『东方夏威夷』之称",
+                county: "东山县"
+            },
+            {
+                name: "南靖土楼（南靖县）",
+                interests: ["徒步"],
+                emoji: "🏯",
+                desc: "世界文化遗产『四菜一汤』田螺坑土楼群",
+                county: "南靖县"
+            },
+            {
+                name: "火山岛（漳浦县）",
+                interests: ["看海", "徒步"],
+                emoji: "🌋",
+                desc: "中国唯一的滨海火山地质遗迹",
+                county: "漳浦县"
+            },
+            {
+                name: "云洞岩（龙文区）",
+                interests: ["徒步"],
+                emoji: "⛰️",
+                desc: "『闽南第一洞天』花岗岩地貌",
+                county: "龙文区"
+            },
+            {
+                name: "六鳌翡翠湾（漳浦县）",
+                interests: ["看海", "骑行"],
+                emoji: "🌅",
+                desc: "中国大陆架最美海滩之一",
+                county: "漳浦县"
+            },
+            {
+                name: "长泰天柱山（长泰区）",
+                interests: ["徒步"],
+                emoji: "🌳",
+                desc: "闽南佛教名山，国家森林公园",
+                county: "长泰区"
+            },
+            {
+                name: "马銮湾（东山县）",
+                interests: ["看海"],
+                emoji: "🏄♂️",
+                desc: "天然海滨浴场，国家4A级景区",
+                county: "东山县"
+            },
+            {
+                name: "华安土楼（华安县）",
+                interests: ["徒步"],
+                emoji: "🛖",
+                desc: "世界文化遗产『二宜楼』所在地",
+                county: "华安县"
+            },
+            {
+                name: "东山苏峰山环岛路（东山县）",
+                interests: ["骑行"],
+                emoji: "🛣️",
+                desc: "最美网红滨海公路",
+                county: "东山县"
+            },
+            {
+                name: "平和灵通山（平和县）",
+                interests: ["徒步"],
+                emoji: "🧗♂️",
+                desc: "闽南第一山，险峻雄奇",
+                county: "平和县"
+            }
+        ];
+
+        function recommendSpot() {
+            const interest = document.getElementById("interest").value;
+            const suitableSpots = spots.filter(spot => 
+                spot.interests.includes(interest)
+            );
+
+            const resultDiv = document.getElementById("result");
+            
+            if (suitableSpots.length > 0) {
+                const randomIndex = Math.floor(Math.random() * suitableSpots.length);
+                const recommended = suitableSpots[randomIndex];
+                resultDiv.innerHTML = `
+                    <div style="font-size:28px">${recommended.emoji}</div>
+                    <h2 style="color:#1a5b84">${recommended.name}</h2>
+                    <div class="county-tag">${recommended.county}</div>
+                    <p style="color:#666;margin-top:10px">${recommended.desc}</p>
+                    <div style="margin-top:15px;color:#888">
+                        适合活动：${recommended.interests.join(" · ")}
+                    </div>
+                `;
+            } else {
+                resultDiv.innerHTML = "当前兴趣暂无推荐，请尝试其他选项";
+            }
+        }
+    </script>
+</body>
+</html>
