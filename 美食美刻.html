@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>来漳州吃什么？</title>
+    <style>
+        body {
+            font-family: "微软雅黑", Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #2a5d84;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .selector {
+            margin: 20px 0;
+            padding: 12px;
+            width: 100%;
+            font-size: 16px;
+            border: 2px solid #2a5d84;
+            border-radius: 5px;
+        }
+        .food-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 10px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: none;
+        }
+        .food-card h3 {
+            color: #2a5d84;
+            margin-top: 0;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        .active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <h1>🍜 漳州美食地图</h1>
+    
+    <select class="selector" id="countySelect">
+        <option value="">-- 请选择县市 --</option>
+        <option value="芗城区">芗城区</option>
+        <option value="龙文区">龙文区</option>
+        <option value="龙海区">龙海区</option>
+        <option value="漳浦县">漳浦县</option>
+        <option value="云霄县">云霄县</option>
+        <option value="诏安县">诏安县</option>
+        <option value="东山县">东山县</option>
+        <option value="南靖县">南靖县</option>
+        <option value="平和县">平和县</option>
+        <option value="华安县">华安县</option>
+        <option value="长泰区">长泰区</option>
+    </select>
+
+    <div id="foodList"></div>
+
+    <script>
+        const foodData = {
+            "芗城区": [
+                { name: "卤面", desc: "用猪骨高汤熬制，配料丰富的传统面食，常见配料有炸肉、卤蛋、五香卷等" },
+                { name: "豆花粉丝", desc: "咸豆花与粉丝的独特组合，可添加卤大肠、笋干等配料" },
+                { name: "干拌面", desc: "花生酱拌面搭配特制酱料，常配例汤食用" }
+            ],
+            "龙海区": [
+                { name: "石码五香", desc: "用豆腐皮包裹肉馅（猪肉、马蹄、洋葱）油炸的特色小吃" },
+                { name: "白水贡糖", desc: "传统手工制作的酥脆花生糖，有咸甜两种口味" },
+                { name: "海澄双糕润", desc: "糯米制作的特色甜点，口感软糯有弹性" }
+            ],
+            "东山县": [
+                { name: "海鲜粥", desc: "现捞小管、海蛎、鱼片等海鲜熬煮的鲜美粥品" },
+                { name: "烧腱灵", desc: "炭火烤制的特色肉制品，用猪网油包裹肉馅烤制" },
+                { name: "肖米", desc: "类似烧卖的特色点心，内馅含萝卜丝、海鲜等" }
+            ],
+            "漳浦县": [
+                { name: "杜浔酥糖", desc: "百年历史的传统花生酥，以麦芽糖和花生制作" },
+                { name: "填鸭", desc: "特殊填喂方式的肥美鸭子，肉质细嫩多汁" },
+                { name: "石榴填鸭", desc: "漳浦石榴镇特色，配特制米酱食用" }
+            ],
+            "云霄县": [
+                { name: "枇杷宴", desc: "枇杷花煲汤、枇杷叶蒸饭等系列养生菜肴" },
+                { name: "水面", desc: "手工制作的韧性面条，搭配特制肉臊" },
+                { name: "烧窑鸡", desc: "用土窑焖烧的整鸡，肉质鲜嫩多汁" }
+            ],
+            "诏安县": [
+                { name: "猫仔粥", desc: "现点现煮的海鲜粥，配料丰富新鲜" },
+                { name: "和合包", desc: "用面皮包裹蔬菜和特制花生糖的独特吃法" }
+            ],
+            "南靖县": [
+                { name: "枸杞汤", desc: "用枸杞叶与猪杂熬制的养生汤品" },
+                { name: "芦笋茶", desc: "用当地特产绿芦笋制作的养生茶饮" }
+            ],
+            "平和县": [
+                { name: "枕头饼", desc: "传统酥饼，形似枕头，内馅含橘饼、芝麻" },
+                { name: "白芽奇兰茶", desc: "当地特产乌龙茶，兰花香韵明显" }
+            ]
+        };
+
+        document.getElementById('countySelect').addEventListener('change', function() {
+            const selectedCounty = this.value;
+            const foodList = document.getElementById('foodList');
+            foodList.innerHTML = '';
+
+            if (selectedCounty && foodData[selectedCounty]) {
+                foodData[selectedCounty].forEach(food => {
+                    const card = document.createElement('div');
+                    card.className = 'food-card active';
+                    card.innerHTML = `
+                        <h3>${food.name}</h3>
+                        <p>${food.desc}</p>
+                    `;
+                    foodList.appendChild(card);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
