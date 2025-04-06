@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>漳州美食过敏原指南</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2A9D8F;
+            --danger: #E76F51;
+            --safe: #2A9D8F;
+            --bg: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transform: translateY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .container:hover {
+            transform: translateY(-5px);
+        }
+
+        h2 {
+            background: var(--primary);
+            color: white;
+            padding: 1.5rem;
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .search-box {
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-bottom: 1px solid #eee;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        input {
+            flex: 1;
+            padding: 0.8rem 1.2rem;
+            border: 2px solid #ddd;
+            border-radius: 0.8rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(42, 157, 143, 0.2);
+        }
+
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0 1.5rem;
+            border-radius: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        button:hover {
+            background: #23857a;
+            transform: scale(1.02);
+        }
+
+        .result {
+            padding: 1.5rem;
+        }
+
+        .alert-card {
+            padding: 1.2rem;
+            border-radius: 0.8rem;
+            margin-bottom: 1rem;
+            background: #fff5f5;
+            border-left: 4px solid var(--danger);
+            animation: fadeIn 0.5s ease;
+        }
+
+        .recommend-card {
+            background: #f0f9f8;
+            border-left: 4px solid var(--safe);
+        }
+
+        .food-item {
+            display: flex;
+            align-items: baseline;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .food-name {
+            font-weight: 500;
+            min-width: 120px;
+            color: var(--danger);
+        }
+
+        .detail {
+            color: #666;
+            font-size: 0.9em;
+            margin-left: 1rem;
+        }
+
+        .recommend-card .food-name {
+            color: var(--safe);
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 0.4rem;
+            font-size: 0.8em;
+            background: rgba(0,0,0,0.05);
+            margin-left: 0.5rem;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .not-found {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+
+        .not-found i {
+            font-size: 2rem;
+            color: var(--danger);
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2><i class="fas fa-allergies"></i> 漳州美食过敏原指南</h2>
+        <div class="search-box">
+            <div class="input-group">
+                <input type="text" id="allergenInput" placeholder="输入过敏原（例如：花生、海鲜）">
+                <button onclick="searchFood()">
+                    <i class="fas fa-search"></i>
+                    立即查询
+                </button>
+            </div>
+        </div>
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        const foodData = {
+            "花生": {
+                avoid: [
+                    "沙茶面 - 沙茶酱以花生、虾干等为基底",
+                    "麻糍 - 传统做法裹花生碎/糖粉",
+                    "润饼（春卷） - 可能含花生糖粉"
+                ],
+                recommend: ["原味麻糍","蔬菜润饼（提前确认）"]
+            },
+            "海鲜": {
+                avoid: [
+                    "蚵仔煎 - 主料为海蛎",
+                    "猫仔粥 - 鲜虾鱿鱼熬煮",
+                    "土笋冻 - 原料为海滩星虫"
+                ],
+                recommend: ["猪肉粥","素菜煎饼"]
+            },
+            "麸质": {
+                avoid: [
+                    "手抓面 - 小麦面条+含麸酱油",
+                    "锅边糊 - 可能掺面粉"
+                ],
+                recommend: ["纯米制锅边糊","地瓜粉制品"]
+            },
+            "鸡蛋": {
+                avoid: [
+                    "海蛎煎 - 传统加鸡蛋煎制",
+                    "面煎粿 - 面糊含蛋"
+                ],
+                recommend: ["素蚵仔煎（地瓜粉版）","无蛋面煎粿"]
+            },
+            "大豆": {
+                avoid: [
+                    "豆花粉丝 - 含豆花/豆瓣酱",
+                    "豆干面 - 卤豆干+大豆酱料"
+                ],
+                recommend: ["米粉汤","纯肉卤面"]
+            },
+            "贝类": {
+                avoid: [
+                    "四果汤 - 可能加蜜渍鲍鱼",
+                    "海鲜炒面线 - 含蛤蜊鱿鱼"
+                ],
+                recommend: ["水果四果汤","猪肉炒面线"]
+            },
+            "芒果": {
+                avoid: [
+                    "四果汤/冰品 - 夏季加芒果块",
+                    "杨桃冰 - 可能加芒果糖浆"
+                ],
+                recommend: ["传统四果汤（确认无芒果）","荔枝冰"]
+            },
+            "芝麻": {
+                avoid: [
+                    "麻糍变体 - 外层裹芝麻",
+                    "咸绿豆糕 - 可能含芝麻粒"
+                ],
+                recommend: ["原味麻糍","无芝麻绿豆糕"]
+            },
+            "芹菜/香菜": {
+                avoid: [
+                    "卤味拼盘 - 卤汁含芹菜",
+                    "扁食汤 - 撒芹菜末/香菜"
+                ],
+                recommend: ["免加料卤味","清汤扁食"]
+            }
+        };
+
+        function searchFood() {
+            const input = document.getElementById("allergenInput").value.trim();
+            const resultDiv = document.getElementById("result");
+            resultDiv.innerHTML = "";
+
+            const match = Object.keys(foodData).find(key => 
+                key.toLowerCase().includes(input.toLowerCase()) || 
+                input.toLowerCase().includes(key.toLowerCase())
+            );
+
+            if (match) {
+                const data = foodData[match];
+                let html = `<div class="avoid"><h3>${match}过敏需注意：</h3><ul>`;
+                
+                data.avoid.forEach(item => {
+                    const [food, detail] = item.split(" - ");
+                    html += `<li>${food}<div class="detail">${detail}</div></li>`;
+                });
+
+                html += `</ul></div><div class="recommend"><h3>安全选择建议：</h3><ul>`;
+                data.recommend.forEach(item => {
+                    html += `<li>${item}</li>`;
+                });
+                
+                resultDiv.innerHTML = html + "</ul></div>";
+            } else {
+                resultDiv.innerHTML = `<p class="avoid">未找到【${input}】相关信息，建议：<br>
+                    1. 主动询问店家原料<br>
+                    2. 避免街边不明原料小吃<br>
+                    3. 携带抗过敏药物</p>`;
+            }
+        }
+
+        // 保持原有事件监听
+        document.getElementById("allergenInput").addEventListener('keypress', e => {
+            if (e.key === 'Enter') searchFood();
+        });
+        
+        function searchFood() {
+            const input = document.getElementById("allergenInput").value.trim();
+            const resultDiv = document.getElementById("result");
+            resultDiv.innerHTML = "";
+
+            const match = Object.keys(foodData).find(key => 
+                key.toLowerCase().includes(input.toLowerCase()) || 
+                input.toLowerCase().includes(key.toLowerCase())
+            );
+
+            if (match) {
+                const data = foodData[match];
+                let html = `
+                    <div class="alert-card">
+                        <h3><i class="fas fa-exclamation-triangle"></i> ${match}过敏风险提示</h3>
+                        ${data.avoid.map(item => `
+                            <div class="food-item">
+                                <div class="food-name">${item.split(" - ")[0]}</div>
+                                <div class="detail">${item.split(" - ")[1]}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="alert-card recommend-card">
+                        <h3><i class="fas fa-heart"></i> 安全选择建议</h3>
+                        ${data.recommend.map(item => `
+                            <div class="food-item">
+                                <div class="food-name">${item}</div>
+                                <span class="tag">推荐替代</span>
+                            </div>
+                        `).join('')}
+                    </div>`;
+                resultDiv.innerHTML = html;
+            } else {
+                resultDiv.innerHTML = `
+                    <div class="not-found">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <h3>暂未收录【${input}】相关信息</h3>
+                        <p>建议：主动询问食材成分、选择可溯源餐厅、随身携带抗敏药物</p>
+                    </div>`;
+            }
+        }
+
+        document.getElementById("allergenInput").addEventListener('keypress', e => {
+            if (e.key === 'Enter') searchFood();
+        });
+    </script>
+</body>
+</html>
